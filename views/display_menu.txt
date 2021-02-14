@@ -1,0 +1,11 @@
+1 - exit
+2 - get current products
+3 - create product 
+4 - change product
+5 - delete product
+6 - suggest recipies, based on products
+7 - get current recipies
+8 - upload recipy
+9 - change recipy
+10 - delete recipy
+11 - get recipy by name

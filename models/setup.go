@@ -13,8 +13,8 @@ func ConnectDataBase() {
 	if err != nil {
 		panic("Failed to connect to database!")
 	}
-
-	db.AutoMigrate(&Product{})
-
+	db.Migrator().AutoMigrate(RecipyProduct{})
+	db.Migrator().AutoMigrate(Product{})
+	db.Migrator().AutoMigrate(Recipy{})
 	DB = db
 }

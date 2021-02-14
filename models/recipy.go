@@ -1,9 +1,7 @@
 package models
 
-import "time"
-
 type Recipy struct {
-	ID         uint      `json:"id" gorm:"primary_key"`
-	Products   []Product `json:"products"`
-	ExpiryDate time.Time `json:"expiry_data"`
+	ID             uint            `json:"id" gorm:"primary_key"`
+	RecipyProducts []RecipyProduct `gorm:"many2many" json:"recipy_products"`
+	Name           string          `json:"name"`
 }

@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"net/http"
-	"time"
+	"strconv"
 
 	"main/models"
 
@@ -10,13 +10,14 @@ import (
 )
 
 type CreateProductInput struct {
-	Name       string    `json:"name" binding:"required"`
-	ExpiryDate time.Time `json:"expiry_date" binding:"required"`
+	Name       string `json:"name" binding:"required"`
+	ExpiryDate string `json:"expiry_date" binding:"required"`
+	Quantity   string `json:"quantity" binding:"required"`
 }
 
 type UpdateProductInput struct {
-	Name       string    `json:"name"`
-	ExpiryDate time.Time `json:"expiry_date"`
+	Name       string `json:"name"`
+	ExpiryDate string `json:"expiry_date"`
 }
 
 func FindProducts(c *gin.Context) {
@@ -27,15 +28,14 @@ func FindProducts(c *gin.Context) {
 }
 
 func CreateProduct(c *gin.Context) {
-	// Validate input
 	var input CreateProductInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Create book
-	product := models.Product{Name: input.Name, ExpiryDate: input.ExpiryDate}
+	quantity, _ := strconv.ParseUint(input.Quantity, 10, 64)
+	product := models.Product{Name: input.Name, ExpiryDate: input.ExpiryDate, Quantity: uint(quantity)}
 	models.DB.Create(&product)
 
 	c.JSON(http.StatusOK, gin.H{"data": product})
@@ -72,7 +72,7 @@ func UpdateProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": product})
 }
 
-func DeleteBook(c *gin.Context) {
+func DeleteProduct(c *gin.Context) {
 	var product models.Product
 	if err := models.DB.Where("id = ?", c.Param("id")).First(&product).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
@@ -82,8 +82,4 @@ func DeleteBook(c *gin.Context) {
 	models.DB.Delete(&product)
 
 	c.JSON(http.StatusOK, gin.H{"data": true})
-}
-
-func GetAllValidProducts(c *gin.Context) {
-
 }
