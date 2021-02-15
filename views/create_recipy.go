@@ -30,7 +30,7 @@ func CreateRecipy() {
 		panic("Not correct name")
 	}
 
-	var recipy_products []RecipyProductInput
+	var recipy_products []models.RecipyProduct
 
 	for {
 		fmt.Println("Do you want to add product to recipy?")
@@ -40,7 +40,7 @@ func CreateRecipy() {
 			break
 		}
 
-		var product RecipyProductInput
+		var product models.RecipyProduct
 
 		fmt.Println("Add product's name")
 		reader := bufio.NewReader(os.Stdin)
@@ -51,24 +51,21 @@ func CreateRecipy() {
 		reader = bufio.NewReader(os.Stdin)
 
 		quantity, _ := reader.ReadString('\n')
+		quantity = strings.TrimSuffix(quantity, "\n")
+
 		quantity_int, _ := strconv.ParseUint(quantity, 10, 64)
 
 		product.Name = product_name
 		product.Quantity = uint(quantity_int)
 		recipy_products = append(recipy_products, product)
-
+		fmt.Println(product_name, quantity_int)
 	}
-	
-
-	var recipy models.Recipy
-	// recipy.RecipyProducts = recipy_products
-	// recipy.Name = name
+	fmt.Println(recipy_products)
 	postBody, _ := json.Marshal(map[string]interface{}{
-		"name":            recipy.Name,
-		"recipy_products": recipy.RecipyProducts,
+		"name":            name,
+		"recipy_products": recipy_products,
 	})
 	responseBody := bytes.NewBuffer(postBody)
-	fmt.Println(responseBody)
 	_, err = http.Post(url, "application/json", responseBody)
 
 	if err != nil {

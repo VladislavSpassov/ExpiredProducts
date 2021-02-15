@@ -14,7 +14,7 @@ func ConnectDataBase() {
 		panic("Failed to connect to database!")
 	}
 	db.AutoMigrate(&Recipy{}, &Product{})
-	db.Model(&RecipyProduct{})
+	db.AutoMigrate(&RecipyProduct{})
 
 	DB = db
 }

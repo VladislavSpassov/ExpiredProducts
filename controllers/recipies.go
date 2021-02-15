@@ -19,7 +19,7 @@ type UpdateRecipyInput struct {
 
 func FindRecipies(c *gin.Context) {
 	var recipies []models.Recipy
-	models.DB.Find(&recipies)
+	models.DB.Preload("RecipyProducts").Find(&recipies)
 
 	c.JSON(http.StatusOK, gin.H{"data": recipies})
 }
@@ -30,10 +30,10 @@ func CreateRecipy(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	for recipy_product := range input.RecipyProducts {
-		models.DB.Create(&recipy_product)
+		models.DB.Save(&recipy_product)
 	}
+
 	recipy := models.Recipy{RecipyProducts: input.RecipyProducts, Name: input.Name}
 	models.DB.Create(&recipy)
 
