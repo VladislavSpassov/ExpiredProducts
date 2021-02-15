@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 
 	"main/models"
 
@@ -12,12 +11,13 @@ import (
 type CreateProductInput struct {
 	Name       string `json:"name" binding:"required"`
 	ExpiryDate string `json:"expiry_date" binding:"required"`
-	Quantity   string `json:"quantity" binding:"required"`
+	Quantity   uint   `json:"quantity" binding:"required"`
 }
 
 type UpdateProductInput struct {
 	Name       string `json:"name"`
 	ExpiryDate string `json:"expiry_date"`
+	Quantity   uint   `json:"quantity"`
 }
 
 func FindProducts(c *gin.Context) {
@@ -34,8 +34,7 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 
-	quantity, _ := strconv.ParseUint(input.Quantity, 10, 64)
-	product := models.Product{Name: input.Name, ExpiryDate: input.ExpiryDate, Quantity: uint(quantity)}
+	product := models.Product{Name: input.Name, ExpiryDate: input.ExpiryDate, Quantity: input.Quantity}
 	models.DB.Create(&product)
 
 	c.JSON(http.StatusOK, gin.H{"data": product})
@@ -53,21 +52,20 @@ func FindProduct(c *gin.Context) { // Get model if exist
 }
 
 func UpdateProduct(c *gin.Context) {
-	// Get model if exist
 	var product models.Product
 	if err := models.DB.Where("id = ?", c.Param("id")).First(&product).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
 
-	// Validate input
 	var input UpdateProductInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	models.DB.Model(&product).Updates(models.Product{Name: input.Name, ExpiryDate: input.ExpiryDate})
+	models.DB.Model(&product).Update("expiry_date", input.ExpiryDate)
+	models.DB.Model(&product).Update("quantity", input.Quantity)
 
 	c.JSON(http.StatusOK, gin.H{"data": product})
 }

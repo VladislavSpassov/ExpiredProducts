@@ -8,7 +8,19 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 )
+
+func IsDateValid(date string) bool {
+	const layout = "2006-01-02T15:04:05.000Z"
+
+	_, err := time.Parse(layout, date+"T00:00:00.000Z")
+	if err != nil {
+		print(err)
+		return false
+	}
+	return true
+}
 
 func CreateProduct() {
 	url := "http://localhost:8080/products"
@@ -30,6 +42,13 @@ func CreateProduct() {
 	if err != nil {
 		panic("Not correct expiry date")
 	}
+	const layout = "2006-01-02T15:04:05.000Z"
+
+	if !IsDateValid(date) {
+		panic("Incorect date!")
+	}
+
+	fmt.Println("Product's quantity: ")
 	quantity, err := reader.ReadString('\n')
 	quantity = strings.TrimSuffix(quantity, "\n")
 

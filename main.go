@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 
 	"main/controllers"
 	"main/models"
@@ -22,6 +23,8 @@ func setRouting(r *gin.Engine) {
 	r.POST("/recipies", controllers.CreateRecipy)
 	r.PATCH("/recipies/:id", controllers.UpdateRecipy)
 	r.DELETE("/recipies/:id", controllers.DeleteRecipy)
+	r.GET("/recipy_products", controllers.FindRecipyProducts)
+	r.POST("/recipy_products", controllers.CreateRecipyProduct)
 	r.Run()
 
 }
@@ -36,17 +39,30 @@ func main() {
 	views.DisplayMenu()
 
 	for {
-		char, _, _ := reader.ReadRune()
-		switch char {
-		case '1':
+		text, _ := reader.ReadString('\n')
+		text = strings.Replace(text, "\n", "", -1)
+		switch text {
+		case "1":
 			fmt.Println("Exitting")
 			os.Exit(1)
-		case '2':
+		case "2":
 			fmt.Println("Get products")
-			views.GetProducts()
-		case '3':
+			views.GetProductsPrint()
+		case "3":
 			fmt.Println("Create product")
 			views.CreateProduct()
+		case "4":
+			fmt.Println("Update product")
+			views.UpdateProduct()
+		case "5":
+			fmt.Println("Delete product")
+			views.DeleteProduct()
+		case "7":
+			fmt.Println("Get recipies")
+			views.GetRecipiesPrint()
+		case "8":
+			fmt.Println("Add recipy")
+			views.CreateRecipy()
 		}
 
 	}

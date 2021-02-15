@@ -8,18 +8,18 @@ import (
 )
 
 type CreateRecipyInput struct {
-	Name           string                 `json:"name"`
-	RecipyProducts []models.RecipyProduct `json:"products"`
+	Name           string                 `json:"name" binding:"required"`
+	RecipyProducts []models.RecipyProduct `json:"recipy_products" binding:"required"`
 }
 
 type UpdateRecipyInput struct {
 	Name           string                 `json:"name"`
-	RecipyProducts []models.RecipyProduct `json:"products"`
+	RecipyProducts []models.RecipyProduct `json:"recipy_products"`
 }
 
 func FindRecipies(c *gin.Context) {
 	var recipies []models.Recipy
-	models.DB.Preload("Products").Find(&recipies)
+	models.DB.Find(&recipies)
 
 	c.JSON(http.StatusOK, gin.H{"data": recipies})
 }
@@ -31,8 +31,11 @@ func CreateRecipy(c *gin.Context) {
 		return
 	}
 
+	for recipy_product := range input.RecipyProducts {
+		models.DB.Create(&recipy_product)
+	}
 	recipy := models.Recipy{RecipyProducts: input.RecipyProducts, Name: input.Name}
-	models.DB.Omit("Products.*").Create(&recipy)
+	models.DB.Create(&recipy)
 
 	c.JSON(http.StatusOK, gin.H{"data": recipy})
 }
@@ -63,7 +66,7 @@ func UpdateRecipy(c *gin.Context) {
 		return
 	}
 
-	models.DB.Model(&recipy).Omit("Products.*").Updates(models.Recipy{Name: input.Name, RecipyProducts: input.RecipyProducts})
+	models.DB.Model(&recipy).Updates(models.Recipy{Name: input.Name, RecipyProducts: input.RecipyProducts})
 
 	c.JSON(http.StatusOK, gin.H{"data": recipy})
 }
