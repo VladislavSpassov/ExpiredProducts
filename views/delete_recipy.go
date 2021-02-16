@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+//DeleteRecipy function to delete a recipy from user by recipy name
 func DeleteRecipy() {
 	fmt.Println("What product do you want to delete?:")
 	reader := bufio.NewReader(os.Stdin)

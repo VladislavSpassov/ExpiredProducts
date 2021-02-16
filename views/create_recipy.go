@@ -12,11 +12,13 @@ import (
 	"strings"
 )
 
+//RecipyProductInput structure for create recipy product
 type RecipyProductInput struct {
 	Name     string `json:"name"  binding:"required"`
 	Quantity uint   `json:"quantity" binding:"required"`
 }
 
+//CreateRecipy function for creating recipy with given name and recipy products by user
 func CreateRecipy() {
 	url := "http://localhost:8080/recipies"
 
@@ -30,7 +32,7 @@ func CreateRecipy() {
 		panic("Not correct name")
 	}
 
-	var recipy_products []models.RecipyProduct
+	var recipyProducts []models.RecipyProduct
 
 	for {
 		fmt.Println("Do you want to add product to recipy?")
@@ -45,25 +47,24 @@ func CreateRecipy() {
 		fmt.Println("Add product's name")
 		reader := bufio.NewReader(os.Stdin)
 
-		product_name, _ := reader.ReadString('\n')
-		product_name = strings.TrimSuffix(product_name, "\n")
+		productName, _ := reader.ReadString('\n')
+		productName = strings.TrimSuffix(productName, "\n")
 		fmt.Println("Add product's quantity")
 		reader = bufio.NewReader(os.Stdin)
 
 		quantity, _ := reader.ReadString('\n')
 		quantity = strings.TrimSuffix(quantity, "\n")
 
-		quantity_int, _ := strconv.ParseUint(quantity, 10, 64)
+		quantityInt, _ := strconv.ParseUint(quantity, 10, 64)
 
-		product.Name = product_name
-		product.Quantity = uint(quantity_int)
-		recipy_products = append(recipy_products, product)
-		fmt.Println(product_name, quantity_int)
+		product.Name = productName
+		product.Quantity = uint(quantityInt)
+		recipyProducts = append(recipyProducts, product)
+		fmt.Println(productName, quantityInt)
 	}
-	fmt.Println(recipy_products)
 	postBody, _ := json.Marshal(map[string]interface{}{
 		"name":            name,
-		"recipy_products": recipy_products,
+		"recipy_products": recipyProducts,
 	})
 	responseBody := bytes.NewBuffer(postBody)
 	_, err = http.Post(url, "application/json", responseBody)

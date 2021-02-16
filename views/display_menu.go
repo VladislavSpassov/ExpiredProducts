@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 )
 
+//DisplayMenu function to display options' menu to user
 func DisplayMenu() {
 	content, err := ioutil.ReadFile("./views/display_menu.txt")
 

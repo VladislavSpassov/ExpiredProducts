@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+//DeleteProduct function to delete a product by given product's name by user
 func DeleteProduct() {
 	fmt.Println("What product do you want to delete?:")
 	reader := bufio.NewReader(os.Stdin)

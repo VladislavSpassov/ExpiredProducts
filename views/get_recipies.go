@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+//GetRecipies fetching all recipies
 func GetRecipies() []models.Recipy {
 	url := "http://localhost:8080/recipies"
 	m := make(map[string][]models.Recipy)
@@ -24,6 +25,8 @@ func GetRecipies() []models.Recipy {
 
 	return m["data"]
 }
+
+//GetRecipiesPrint printing all recipies
 func GetRecipiesPrint() {
 	products := GetRecipies()
 	for _, product := range products {

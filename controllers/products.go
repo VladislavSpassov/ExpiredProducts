@@ -8,18 +8,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//CreateProductInput input structure for creating product
 type CreateProductInput struct {
 	Name       string `json:"name" binding:"required"`
 	ExpiryDate string `json:"expiry_date" binding:"required"`
 	Quantity   uint   `json:"quantity" binding:"required"`
 }
 
+//UpdateProductInput  structure for updating product
 type UpdateProductInput struct {
 	Name       string `json:"name"`
 	ExpiryDate string `json:"expiry_date"`
 	Quantity   uint   `json:"quantity"`
 }
 
+// FindProducts controller for finding all products
 func FindProducts(c *gin.Context) {
 	var products []models.Product
 	models.DB.Find(&products)
@@ -27,6 +30,7 @@ func FindProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": products})
 }
 
+// CreateProduct controller for creating product
 func CreateProduct(c *gin.Context) {
 	var input CreateProductInput
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -40,6 +44,7 @@ func CreateProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": product})
 }
 
+// FindProduct controller for finding product by id
 func FindProduct(c *gin.Context) { // Get model if exist
 	var product models.Product
 
@@ -51,6 +56,7 @@ func FindProduct(c *gin.Context) { // Get model if exist
 	c.JSON(http.StatusOK, gin.H{"data": product})
 }
 
+// UpdateProduct controller for updating product by id
 func UpdateProduct(c *gin.Context) {
 	var product models.Product
 	if err := models.DB.Where("id = ?", c.Param("id")).First(&product).Error; err != nil {
@@ -70,6 +76,7 @@ func UpdateProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": product})
 }
 
+// DeleteProduct controller for deleting product by id
 func DeleteProduct(c *gin.Context) {
 	var product models.Product
 	if err := models.DB.Where("id = ?", c.Param("id")).First(&product).Error; err != nil {

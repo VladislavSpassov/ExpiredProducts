@@ -8,13 +8,7 @@ import (
 	"net/http"
 )
 
-type GetProductStruct struct {
-	ID         uint
-	Name       string
-	ExpiryDate string
-	Quantity   uint
-}
-
+//GetProducts fetch products function
 func GetProducts() []models.Product {
 	url := "http://localhost:8080/products"
 	m := make(map[string][]models.Product)
@@ -29,6 +23,8 @@ func GetProducts() []models.Product {
 
 	return m["data"]
 }
+
+//GetProductsPrint printing all current products
 func GetProductsPrint() {
 	products := GetProducts()
 	for _, product := range products {

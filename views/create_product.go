@@ -7,10 +7,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
 
+// IsDateValid Check if string date is in format YYYY-MM-DD
 func IsDateValid(date string) bool {
 	const layout = "2006-01-02T15:04:05.000Z"
 
@@ -22,6 +24,7 @@ func IsDateValid(date string) bool {
 	return true
 }
 
+// CreateProduct Function to create product by user with given product's name, expiry date and quantity
 func CreateProduct() {
 	url := "http://localhost:8080/products"
 
@@ -52,14 +55,15 @@ func CreateProduct() {
 	quantity, err := reader.ReadString('\n')
 	quantity = strings.TrimSuffix(quantity, "\n")
 
+	quantityInt, _ := strconv.ParseUint(quantity, 10, 64)
 	if err != nil {
 		panic("Not correct quantity")
 	}
 
-	postBody, _ := json.Marshal(map[string]string{
+	postBody, _ := json.Marshal(map[string]interface{}{
 		"name":        name,
 		"expiry_date": date,
-		"quantity":    quantity,
+		"quantity":    quantityInt,
 	})
 	responseBody := bytes.NewBuffer(postBody)
 	fmt.Println(responseBody)
